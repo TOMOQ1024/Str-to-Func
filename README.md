@@ -5,7 +5,7 @@
 # 文法
 数式全体はexprとみなします
 ```
-expr = mult ("+" mult | "-" mult)*
+expr = ("+" | "-")? mult ("+" mult | "-" mult)*
 mult = powr (powr | "*" powr | "/" powr)*
 powr = prim ("^" prim)*
 prim = "(" expr ")" | func | v | n
