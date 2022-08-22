@@ -4,6 +4,7 @@
 
 # 文法
 数式全体はexprとみなします
+また，"t", "theta"は"x"とみなして計算します
 ```
 expr = ("+" | "-")? mult ("+" mult | "-" mult)*
 mult = powr (powr | "*" powr | "/" powr)*
