@@ -12,6 +12,6 @@ powr = prim ("^" prim)*
 prim = "(" expr ")" | func | v | n
 func = f mult | f "(" expr ("," expr)* ")"
 n = 0以上の整数
-v = "a" | "b" | "c" | "d" | "x" | "t" | "theta" | "PI"
+v = "a" | "b" | "c" | "d" | "x" | "t" | "h" | "PI"
 f = "cos" | "sin" | "tan" | "floor" | "round" | "ceil" | "exp" | "ln" | "mod"
 ```
