@@ -35,7 +35,7 @@
 #define IDF_EXP			-218
 #define IDF_LN			-219
 
-#define IDF_MOD			-220
+#define IDF_MOD - 220
 
 
 
@@ -200,7 +200,7 @@ bool consume_var(int* id)
 	else if (strncmp(token->str,  "d", 1) == 0) *id = IDV_D;
 	else if (strncmp(token->str,  "x", 1) == 0) *id = IDV_X;
 	else if (strncmp(token->str,  "t", 1) == 0) *id = IDV_X;
-	else if (strncmp(token->str, "ƒÆ", 2) == 0) *id = IDV_X;
+	else if (strncmp(token->str, "theta", 2) == 0) *id = IDV_X;
 	else if (strncmp(token->str, "PI", 2) == 0) *id = IDV_PI;
 	else return false;
 
@@ -353,7 +353,13 @@ Node* new_node_func(int id, Node* lhs, Node* rhs)
 
 Node* expr(void)
 {
-	Node* node = mult();
+	Node* node;
+	
+	if (consume("-"))node = new_node(ND_SUB, mult(), new_node_num(0));
+	else {
+		consume("+");
+		node = mult();
+	}
 
 	for (;;) {
 		if (consume("+"))
@@ -433,12 +439,10 @@ void gen(Node* node)
 	int v = node->val;
 
 	if (node->kind == ND_NUM) {
-		printf("   push %d\n", v);
 		op[++func_count - 1] = v;
 		return;
 	}
 	if (node->kind == ND_VAR) {
-		printf("   push %s\n", GetVarName(v));
 		op[++func_count - 1] = v;
 		return;
 	}
@@ -447,13 +451,13 @@ void gen(Node* node)
 	if (node->kind != ND_FNC || v / 10 % 2 == 0) gen(node->rhs);
 
 	switch (node->kind) {
-	case ND_ADD: printf("   add\n"); op[++func_count - 1] = IDF_ADD; break;
-	case ND_SUB: printf("   sub\n"); op[++func_count - 1] = IDF_SUB; break;
-	case ND_MUL: printf("   mul\n"); op[++func_count - 1] = IDF_MUL; break;
-	case ND_DIV: printf("   div\n"); op[++func_count - 1] = IDF_DIV; break;
-	case ND_POW: printf("   pow\n"); op[++func_count - 1] = IDF_POW; break;
-	case ND_FNC: printf("   %s\n", GetFuncName(v)); op[++func_count - 1] = v; break;
-	default    : printf("   ???\n"); op[++func_count - 1] = IDF_ERR; break;
+	case ND_ADD: op[++func_count - 1] = IDF_ADD; break;
+	case ND_SUB: op[++func_count - 1] = IDF_SUB; break;
+	case ND_MUL: op[++func_count - 1] = IDF_MUL; break;
+	case ND_DIV: op[++func_count - 1] = IDF_DIV; break;
+	case ND_POW: op[++func_count - 1] = IDF_POW; break;
+	case ND_FNC: op[++func_count - 1] = v; break;
+	default    : op[++func_count - 1] = IDF_ERR; break;
 	}
 }
 
@@ -498,9 +502,10 @@ double Calc(double x, double a, double b, double c, double d)
 
 
 int main(void) {
-	char str[] = "x-sin(2PIx)/(2PI)";
+	char str[30];
 
-	printf("\n\n   f(x) = %s\n\n", str);
+	printf("\n\n   f(x) = ");
+	fgets(str, sizeof(str) / sizeof(char), stdin);
 
 	token = tokenize(str);
 
@@ -514,18 +519,6 @@ int main(void) {
 	for (double x = 0; x <= 2; x += 0.125) {
 			printf("   f(%5.3f) = %8.5f\n", x, Calc(x, 0, 0, 0, 0));
 	}
-
-	//printf("push %d\n", expect_number());
-
-	//while (!at_eof()) {
-	//	if (consume('+')) {
-	//		printf("add %d\n", expect_number());
-	//		continue;
-	//	}
-
-	//	expect('-');
-	//	printf("sub %d\n", expect_number());
-	//}
 
 	printf("\n");
 	return 0;
