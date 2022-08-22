@@ -200,7 +200,7 @@ bool consume_var(int* id)
 	else if (strncmp(token->str,  "d", 1) == 0) *id = IDV_D;
 	else if (strncmp(token->str,  "x", 1) == 0) *id = IDV_X;
 	else if (strncmp(token->str,  "t", 1) == 0) *id = IDV_X;
-	else if (strncmp(token->str, "theta", 2) == 0) *id = IDV_X;
+	else if (strncmp(token->str,  "h", 1) == 0) *id = IDV_X;
 	else if (strncmp(token->str, "PI", 2) == 0) *id = IDV_PI;
 	else return false;
 
